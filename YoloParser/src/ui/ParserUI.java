@@ -30,6 +30,7 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.YoloParser;
+import controller.YoloParserClient;
 import model.RealObject;
 import model.RealObjectPack;
 
@@ -142,6 +143,13 @@ public class ParserUI {
 	private void processSingleObjectsOutput() {
 		ArrayList<RealObject> objects = (ArrayList<RealObject>) YoloParser.parse(textArea.getText());
 		
+		YoloParserClient.sendObjectsList(YoloParser.objectListToJSON(objects));
+		
+		if (objects.isEmpty()) {
+			textArea2.setText("NONE");
+			return;
+		}
+		
 		for (RealObject object : objects) {
 			System.out.println("Result:" + object);
 		}
@@ -157,7 +165,15 @@ public class ParserUI {
 	
 	private void processQuantityObjectsOutput() {
 		ArrayList<RealObject> objects = (ArrayList<RealObject>) YoloParser.parse(textArea.getText());
+		
+		YoloParserClient.sendObjectsList(YoloParser.objectListToJSON(objects));
+		
 		HashMap objectsHash = new HashMap<String, RealObjectPack>();
+		
+		if (objects.isEmpty()) {
+			textArea2.setText("NONE");
+			return;
+		}
 
 		for (final RealObject object : objects) {
 			RealObjectPack objectPack = (RealObjectPack) objectsHash.get(object.getName());
@@ -223,7 +239,6 @@ public class ParserUI {
 	}
 	
 	private void startUpdateInputFileJob(final File selectedFile) {
-		System.out.println("\n\n\n\n EXECUTING JOB \n\n\n\n\n");
 		exec = Executors.newSingleThreadScheduledExecutor();
 		exec.scheduleAtFixedRate(new Runnable() {
 		  @Override
@@ -240,7 +255,11 @@ public class ParserUI {
 		                line = br.readLine();
 		            }
 		            String all = sb.toString();
+		            
+		            
+		            
 		            textArea.setText(all);
+		            
 		        }catch(Exception e){
 		            e.printStackTrace();
 		        }finally {
@@ -257,6 +276,6 @@ public class ParserUI {
 		        	processQuantityObjectsOutput();
 		        }
 		  }
-		}, 0, 1, TimeUnit.SECONDS);
+		}, 0, 3, TimeUnit.SECONDS);
 	}
 }
