@@ -42,9 +42,10 @@ public class YoloParserClient {
 	
 	public static void sendStartInputObjectList(final String inputObjects) {
 		try {
-			System.out.println("SENDING DATA!");
+			System.out.println("SENDING START DATA!");
 			httpClient = HttpClientBuilder.create().build();
 		    final HttpPost request = new HttpPost("http://localhost:8080/api/inputobjectfromfrontcamera/startlist");
+		    System.out.println(inputObjects);
 		    final StringEntity params = new StringEntity(inputObjects);
 		    request.addHeader("content-type", "application/json");
 		    request.setEntity(params);
@@ -87,7 +88,7 @@ public class YoloParserClient {
 	
 	public static void sendStartTopInputObjectList(final String inputObjects) {
 		try {
-			System.out.println("SENDING DATA!");
+			System.out.println("SENDING START DATA!");
 			httpClient = HttpClientBuilder.create().build();
 		    final HttpPost request = new HttpPost("http://localhost:8080/api/inputobjectfromtopcamera/startlist");
 		    final StringEntity params = new StringEntity(inputObjects);

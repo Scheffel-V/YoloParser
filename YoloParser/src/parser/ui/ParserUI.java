@@ -170,6 +170,7 @@ public class ParserUI {
 		if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
 			if (this.startingFrontList) {
 				YoloParserClient.sendStartInputObjectList(g.toJson(objects.getInputObjects()));	
+				this.startingFrontList = false;
 			} else {
 				YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));	
 			}
@@ -193,8 +194,9 @@ public class ParserUI {
 		Gson g = new Gson();
 		
 		if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
-			if (this.startingFrontList) {
+			if (this.startingTopList) {
 				YoloParserClient.sendStartTopInputObjectList(g.toJson(objects.getInputObjects()));
+				this.startingTopList = false;
 			} else {
 				YoloParserClient.sendTopInputObjectList(g.toJson(objects.getInputObjects()));
 			}
