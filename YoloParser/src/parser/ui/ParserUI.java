@@ -54,6 +54,8 @@ public class ParserUI {
 	private ScheduledExecutorService exec;
 	private boolean automaticMode;
 	private boolean singleObjectsMode = true;
+	private boolean startingTopList = true;
+	private boolean startingFrontList = true;
 	
 	private int type = 0;
 	
@@ -166,7 +168,11 @@ public class ParserUI {
 		Gson g = new Gson();
 		
 		if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
-			YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));
+			if (this.startingFrontList) {
+				YoloParserClient.sendStartInputObjectList(g.toJson(objects.getInputObjects()));	
+			} else {
+				YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));	
+			}
 		}
 		
 		if (objects.getInputObjects().isEmpty()) {
@@ -183,35 +189,25 @@ public class ParserUI {
 	}
 	
 	private void processQuantityObjectsOutput() {
-		InputObjects objects = YoloParser.parseQuantityObjects(textArea.getText());
+		InputObjects objects = YoloParser.parseUnitObjects(textArea.getText());
+		Gson g = new Gson();
 		
-		HashMap<String, RealObjectPack> objectsHash = new HashMap<String, RealObjectPack>();
+		if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
+			if (this.startingFrontList) {
+				YoloParserClient.sendStartTopInputObjectList(g.toJson(objects.getInputObjects()));
+			} else {
+				YoloParserClient.sendTopInputObjectList(g.toJson(objects.getInputObjects()));
+			}
+		}
 		
 		if (objects.getInputObjects().isEmpty()) {
 			textArea2.setText("NONE");
 			return;
 		}
 
-		for (final InputObject object : objects.getInputObjects()) {
-			RealObjectPack objectPack = (RealObjectPack) objectsHash.get(object.getClasse());
-			
-			if (objectPack == null) {
-				objectsHash.put(object.getClasse(), new RealObjectPack(object.getClasse()));
-				continue;
-			}
-			
-			objectPack.addOne();
-		}
-		
-		if (YoloParserLogic.objectPackHasChanged(objectsHash)) {
-			YoloParserClient.sendObjectPackList(YoloParser.objectPackListToJSON(new ArrayList<RealObjectPack>(objectsHash.values())));
-		}
-		
 		String outputString = "";
-		for (final Object objectName : objectsHash.keySet()) {
-			RealObjectPack pack = (RealObjectPack) objectsHash.get(objectName);
-			outputString = outputString + "Object Name: " + pack.getName() + "\n" +
-					  "Quantity: " + pack.getQuantity() + "\n\n";
+		for (InputObject object : objects.getInputObjects()) {
+			outputString = outputString + object.getClasse();
 		}
 		
 		textArea2.setText(outputString);
