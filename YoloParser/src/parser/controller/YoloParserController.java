@@ -73,13 +73,12 @@ public class YoloParserController {
 		System.out.println("[0]");
 		final InputStreamReader isReader = new InputStreamReader(System.in);
 		final BufferedReader bufReader = new BufferedReader(isReader);
-		String inputStr = "";
 		String inputLine = "";
-		System.out.println("[1]");
-		boolean begin = false;
-		
+		System.out.println("[1]");	
+		boolean starting = true;
 		
 		while(inputLine != null) {
+			String inputStr = "";
 		    try {
 		    	if (bufReader.ready()) {
 			    	do {
@@ -95,22 +94,20 @@ public class YoloParserController {
 				System.exit(0);
 			} 
 		    
-		    if(inputStr != null) {
-		    	if (!begin && inputStr.contains("Done!")) {
-		    		begin = true;
-		    		continue;
-		    	}
-		    	
-		    	if (begin) {
+		    if(inputLine != null) {		    	
 			    	System.out.println("[3]");
-					final InputObjects objects = YoloParser.parseUnitObjects("");
+					final InputObjects objects = YoloParser.parseUnitObjects(inputStr);
 					final Gson g = new Gson();
 					System.out.println("[4]");
 					if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
 						System.out.println("[5]");
-						YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));
+						if (starting) {
+							YoloParserClient.sendStartInputObjectList(g.toJson(objects.getInputObjects()));
+							starting = false;
+						} else {
+							YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));
+						}
 						System.out.println("[6]");
-					}
 		    	}
 		    } else {
 		        System.out.println("EOF");
@@ -121,50 +118,40 @@ public class YoloParserController {
 	private static void initQuantityTypeParsing() {	
 		final InputStreamReader isReader = new InputStreamReader(System.in);
 		final BufferedReader bufReader = new BufferedReader(isReader);
-		boolean begin = false;
 		String inputLine = "";
+		boolean starting = true;
 		
 		while(inputLine != null) {
 			String inputStr = "";
 		    try {
-		    	do {
-		    	inputLine = bufReader.readLine();
-		    	inputStr += inputLine;
-		    	} while(inputLine != null && !inputLine.equals("}"));
+		    	if (bufReader.ready()) {
+			    	do {
+				    	inputLine = bufReader.readLine();
+				    	inputStr += inputLine;
+				    	} while(inputLine != null && !inputLine.equals("}"));
+					System.out.println("[2]");
+		    	} else {
+		    		continue;
+		    	}
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.exit(0);
 			} 
 		    
-		    if(inputLine != null) {
-		    	if (!begin && inputStr.contains("Done!")) {
-		    		begin = true;
-		    		continue;
-		    	}
-		    	
-		    	if (begin) {
-
-			    	final InputObjects objects = YoloParser.parseQuantityObjects("");
-					final HashMap<String, RealObjectPack> objectsHash = new HashMap<String, RealObjectPack>();
-					
-					if (objects.getInputObjects().isEmpty()) {
-						return;
-					}
-
-					for (final InputObject object : objects.getInputObjects()) {
-						final RealObjectPack objectPack = (RealObjectPack) objectsHash.get(object.getClasse());
-						
-						if (objectPack == null) {
-							objectsHash.put(object.getClasse(), new RealObjectPack(object.getClasse()));
-							continue;
+		    if(inputLine != null) {		    	
+			    	System.out.println("[3]");
+					final InputObjects objects = YoloParser.parseUnitObjects(inputStr);
+					final Gson g = new Gson();
+					System.out.println("[4]");
+					if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
+						System.out.println("[5]");
+						if (starting) {
+							YoloParserClient.sendStartTopInputObjectList(g.toJson(objects.getInputObjects()));
+							starting = false;
+						} else {
+							YoloParserClient.sendTopInputObjectList(g.toJson(objects.getInputObjects()));
 						}
-						
-						objectPack.addOne();
-					}
-					
-					if (YoloParserLogic.objectPackHasChanged(objectsHash)) {
-						YoloParserClient.sendObjectPackList(YoloParser.objectPackListToJSON(new ArrayList<RealObjectPack>(objectsHash.values())));
-					}
+						System.out.println("[6]");
 		    	}
 		    } else {
 		        System.out.println("EOF");
