@@ -70,11 +70,9 @@ public class YoloParserController {
 	}
 	
 	private static void initUnityTypeParsing() {
-		System.out.println("[0]");
 		final InputStreamReader isReader = new InputStreamReader(System.in);
 		final BufferedReader bufReader = new BufferedReader(isReader);
 		String inputLine = "";
-		System.out.println("[1]");	
 		boolean starting = true;
 		
 		while(inputLine != null) {
@@ -85,7 +83,6 @@ public class YoloParserController {
 				    	inputLine = bufReader.readLine();
 				    	inputStr += inputLine;
 				    	} while(inputLine != null && !inputLine.equals("}"));
-					System.out.println("[2]");
 		    	} else {
 		    		continue;
 		    	}
@@ -95,19 +92,15 @@ public class YoloParserController {
 			} 
 		    
 		    if(inputLine != null) {		    	
-			    	System.out.println("[3]");
 					final InputObjects objects = YoloParser.parseUnitObjects(inputStr);
 					final Gson g = new Gson();
-					System.out.println("[4]");
 					if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
-						System.out.println("[5]");
 						if (starting) {
 							YoloParserClient.sendStartInputObjectList(g.toJson(objects.getInputObjects()));
 							starting = false;
 						} else {
 							YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));
 						}
-						System.out.println("[6]");
 		    	}
 		    } else {
 		        System.out.println("EOF");
@@ -129,7 +122,6 @@ public class YoloParserController {
 				    	inputLine = bufReader.readLine();
 				    	inputStr += inputLine;
 				    	} while(inputLine != null && !inputLine.equals("}"));
-					System.out.println("[2]");
 		    	} else {
 		    		continue;
 		    	}
@@ -139,19 +131,15 @@ public class YoloParserController {
 			} 
 		    
 		    if(inputLine != null) {		    	
-			    	System.out.println("[3]");
 					final InputObjects objects = YoloParser.parseUnitObjects(inputStr);
 					final Gson g = new Gson();
-					System.out.println("[4]");
 					if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
-						System.out.println("[5]");
 						if (starting) {
 							YoloParserClient.sendStartTopInputObjectList(g.toJson(objects.getInputObjects()));
 							starting = false;
 						} else {
 							YoloParserClient.sendTopInputObjectList(g.toJson(objects.getInputObjects()));
 						}
-						System.out.println("[6]");
 		    	}
 		    } else {
 		        System.out.println("EOF");
