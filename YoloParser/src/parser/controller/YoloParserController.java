@@ -74,13 +74,18 @@ public class YoloParserController {
 		final InputStreamReader isReader = new InputStreamReader(System.in);
 		final BufferedReader bufReader = new BufferedReader(isReader);
 		String inputStr = "";
+		String inputLine = "";
 		System.out.println("[1]");
+		boolean begin = false;
 		
 		
-		while(inputStr != null) {
+		while(inputLine != null) {
 		    try {
 		    	if (bufReader.ready()) {
-					inputStr = bufReader.readLine();
+			    	do {
+				    	inputLine = bufReader.readLine();
+				    	inputStr += inputLine;
+				    	} while(inputLine != null && !inputLine.equals("}"));
 					System.out.println("[2]");
 		    	} else {
 		    		continue;
@@ -91,15 +96,22 @@ public class YoloParserController {
 			} 
 		    
 		    if(inputStr != null) {
-		    	System.out.println("[3]");
-				final InputObjects objects = YoloParser.parseUnitObjects("");
-				final Gson g = new Gson();
-				System.out.println("[4]");
-				if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
-					System.out.println("[5]");
-					YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));
-					System.out.println("[6]");
-				}
+		    	if (!begin && inputStr.contains("Done!")) {
+		    		begin = true;
+		    		continue;
+		    	}
+		    	
+		    	if (begin) {
+			    	System.out.println("[3]");
+					final InputObjects objects = YoloParser.parseUnitObjects("");
+					final Gson g = new Gson();
+					System.out.println("[4]");
+					if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
+						System.out.println("[5]");
+						YoloParserClient.sendInputObjectList(g.toJson(objects.getInputObjects()));
+						System.out.println("[6]");
+					}
+		    	}
 		    } else {
 		        System.out.println("EOF");
 		    }
@@ -109,38 +121,51 @@ public class YoloParserController {
 	private static void initQuantityTypeParsing() {	
 		final InputStreamReader isReader = new InputStreamReader(System.in);
 		final BufferedReader bufReader = new BufferedReader(isReader);
-		String inputStr = "";
+		boolean begin = false;
+		String inputLine = "";
 		
-		while(inputStr != null) {
+		while(inputLine != null) {
+			String inputStr = "";
 		    try {
-				inputStr = bufReader.readLine();
+		    	do {
+		    	inputLine = bufReader.readLine();
+		    	inputStr += inputLine;
+		    	} while(inputLine != null && !inputLine.equals("}"));
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.exit(0);
 			} 
 		    
-		    if(inputStr != null) {
-		    	final InputObjects objects = YoloParser.parseQuantityObjects("");
-				final HashMap<String, RealObjectPack> objectsHash = new HashMap<String, RealObjectPack>();
-				
-				if (objects.getInputObjects().isEmpty()) {
-					return;
-				}
+		    if(inputLine != null) {
+		    	if (!begin && inputStr.contains("Done!")) {
+		    		begin = true;
+		    		continue;
+		    	}
+		    	
+		    	if (begin) {
 
-				for (final InputObject object : objects.getInputObjects()) {
-					final RealObjectPack objectPack = (RealObjectPack) objectsHash.get(object.getClasse());
+			    	final InputObjects objects = YoloParser.parseQuantityObjects("");
+					final HashMap<String, RealObjectPack> objectsHash = new HashMap<String, RealObjectPack>();
 					
-					if (objectPack == null) {
-						objectsHash.put(object.getClasse(), new RealObjectPack(object.getClasse()));
-						continue;
+					if (objects.getInputObjects().isEmpty()) {
+						return;
+					}
+
+					for (final InputObject object : objects.getInputObjects()) {
+						final RealObjectPack objectPack = (RealObjectPack) objectsHash.get(object.getClasse());
+						
+						if (objectPack == null) {
+							objectsHash.put(object.getClasse(), new RealObjectPack(object.getClasse()));
+							continue;
+						}
+						
+						objectPack.addOne();
 					}
 					
-					objectPack.addOne();
-				}
-				
-				if (YoloParserLogic.objectPackHasChanged(objectsHash)) {
-					YoloParserClient.sendObjectPackList(YoloParser.objectPackListToJSON(new ArrayList<RealObjectPack>(objectsHash.values())));
-				}
+					if (YoloParserLogic.objectPackHasChanged(objectsHash)) {
+						YoloParserClient.sendObjectPackList(YoloParser.objectPackListToJSON(new ArrayList<RealObjectPack>(objectsHash.values())));
+					}
+		    	}
 		    } else {
 		        System.out.println("EOF");
 		    }
