@@ -3,10 +3,8 @@ package parser.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import parser.model.InputObject;
-import parser.model.RealObjectPack;
 
 
 public class YoloParserLogic {
@@ -49,12 +47,10 @@ public class YoloParserLogic {
 			final Integer quantity = map.get(key);
 			
 			if (quantity > 0) {
-				System.out.println("Foi retirado [" + quantity + "] unidades de [" + key + "]");
 				changed = true;
 			}
 			
 			if (quantity < 0) {
-				System.out.println("Foi adicionado  [" + quantity + "] unidades de [" + key + "]");
 				changed = true;
 			}
 		}
@@ -112,12 +108,10 @@ public class YoloParserLogic {
 			final Integer quantity = map.get(key);
 			
 			if (quantity > 0) {
-				System.out.println("Foi retirado [" + quantity + "] unidades de [" + key + "]");
 				changed = true;
 			}
 			
 			if (quantity < 0) {
-				System.out.println("Foi adicionado  [" + quantity + "] unidades de [" + key + "]");
 				changed = true;
 			}
 		}
