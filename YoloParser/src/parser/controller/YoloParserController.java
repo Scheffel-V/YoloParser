@@ -94,7 +94,7 @@ public class YoloParserController {
 		    if(inputLine != null) {		    	
 					final InputObjects objects = YoloParser.parseUnitObjects(inputStr);
 					final Gson g = new Gson();
-					if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
+					if (YoloParserLogic.frontObjectListHasChanged(objects.getInputObjects())) {
 						if (starting) {
 							YoloParserClient.sendStartInputObjectList(g.toJson(objects.getInputObjects()));
 							starting = false;
@@ -133,7 +133,7 @@ public class YoloParserController {
 		    if(inputLine != null) {		    	
 					final InputObjects objects = YoloParser.parseUnitObjects(inputStr);
 					final Gson g = new Gson();
-					if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
+					if (YoloParserLogic.topObjectListHasChanged(objects.getInputObjects())) {
 						if (starting) {
 							YoloParserClient.sendStartTopInputObjectList(g.toJson(objects.getInputObjects()));
 							starting = false;
@@ -148,28 +148,6 @@ public class YoloParserController {
 	}
 	
 	private static void initPersonsTypeParsing() {
-		final InputStreamReader isReader = new InputStreamReader(System.in);
-		final BufferedReader bufReader = new BufferedReader(isReader);
-		String inputStr = "";
-		
-		while(inputStr != null) {
-		    try {
-				inputStr = bufReader.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(0);
-			} 
-		    
-		    if(inputStr != null) {
-				final InputObjects objects = YoloParser.parseUnitObjects(inputStr);
-				final Gson g = new Gson();
-				
-				if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
-					YoloParserClient.sendPersons(g.toJson(objects.getInputObjects()));
-				}
-		    } else {
-		        System.out.println("EOF");
-		    }
-		}
+		//@TODO
 	}
 }

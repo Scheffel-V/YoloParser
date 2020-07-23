@@ -167,7 +167,7 @@ public class ParserUI {
 		InputObjects objects = YoloParser.parseUnitObjects(textArea.getText());
 		Gson g = new Gson();
 		
-		if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
+		if (YoloParserLogic.frontObjectListHasChanged(objects.getInputObjects())) {
 			if (this.startingFrontList) {
 				YoloParserClient.sendStartInputObjectList(g.toJson(objects.getInputObjects()));	
 				this.startingFrontList = false;
@@ -193,7 +193,7 @@ public class ParserUI {
 		InputObjects objects = YoloParser.parseUnitObjects(textArea.getText());
 		Gson g = new Gson();
 		
-		if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
+		if (YoloParserLogic.topObjectListHasChanged(objects.getInputObjects())) {
 			if (this.startingTopList) {
 				YoloParserClient.sendStartTopInputObjectList(g.toJson(objects.getInputObjects()));
 				this.startingTopList = false;
@@ -216,24 +216,7 @@ public class ParserUI {
 	}
 	
 	private void processPersons() {
-		InputObjects objects = YoloParser.parseUnitObjects(textArea.getText());
-		Gson g = new Gson();
-		
-		if (YoloParserLogic.objectListHasChanged(objects.getInputObjects())) {
-			YoloParserClient.sendPersons(g.toJson(objects.getInputObjects()));
-		}
-		
-		if (objects.getInputObjects().isEmpty()) {
-			textArea2.setText("NONE");
-			return;
-		}
-
-		String outputString = "";
-		for (InputObject object : objects.getInputObjects()) {
-			outputString = outputString + object.getClasse();
-		}
-		
-		textArea2.setText(outputString);
+		//@TODO
 	}
 	
 	private void selectFile() {
