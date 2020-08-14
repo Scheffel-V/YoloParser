@@ -1,0 +1,7 @@
+ sudo ./darknet detector demo YOLO/exemplo.data YOLO/exemplo.cfg YOLO/exemplo_final.weights YOLO/imagens/video.mp4 -prefix pictures_video > out_video.txt
+
+
+sudo ./darknet detector demo YOLO_FRENTE/exemplo.data YOLO_FRENTE/exemplo.cfg YOLO_FRENTE/exemplo_final.weights YOLO_FRENTE/frente-1.mp4 -prefix pictures_video > out_video.txt
+
+
+darknet detector demo YOLO_FRENTE/exemplo.data YOLO_FRENTE/exemplo.cfg YOLO_FRENTE/exemplo_final.weights -dont_show -ext_output < data/train.txt > result.txt

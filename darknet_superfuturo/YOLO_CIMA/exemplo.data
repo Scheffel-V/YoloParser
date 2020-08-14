@@ -1,0 +1,5 @@
+classes=1
+train=cfg/train_carine.txt
+valid=cfg/test_carine.txt
+names=YOLO_CIMA/classes.names
+backup=backup

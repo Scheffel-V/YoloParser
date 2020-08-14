@@ -1,0 +1,5 @@
+classes=3
+train=train_carine.txt
+valid=test_carine.txt
+names=YOLO_FRENTE/classes.names
+backup=backup
